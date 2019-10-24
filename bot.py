@@ -90,9 +90,21 @@ def run(r, response_data):
         comment_url = r"https://api.pushshift.io/reddit/search/comment/?q=my\\_friendly\\_bot&sort=desc&size=50&fields=author,body,created_utc,id,subreddit&after=" + last_utc
         parsed_comment_json = json_dump_and_parse("comment_data.json", requests.get(comment_url))
 
-        # if results are found
-        if (len(parsed_comment_json["data"]) > 0):
+        # new code to parse mobile comments that don't need backslash
+        comment_url2 = r"https://api.pushshift.io/reddit/search/comment/?q=my_friendly_bot&sort=desc&size=50&fields=author,body,created_utc,id,subreddit&after=" + last_utc
+        parsed_comment_json2 = json_dump_and_parse("comment_data2.json", requests.get(comment_url2))
+
+        if (len(parsed_comment_json["data"]) == 0):
+            last_utc = parsed_comment_json2["data"][0]["created_utc"]
+        elif (len(parsed_comment_json2["data"]) == 0):
             last_utc = parsed_comment_json["data"][0]["created_utc"]
+        else:
+            last_utc = max(parsed_comment_json["data"][0]["created_utc"], parsed_comment_json2["data"][0]["created_utc"])
+
+        # combine results
+        parsed_comment_json["data"].extend(parsed_comment_json2["data"])
+
+        print(parsed_comment_json)
 
         # write to file the last utc
         with open("utc.txt", "w") as f:
@@ -106,9 +118,9 @@ def run(r, response_data):
             comment_subreddit = comment["subreddit"]
             comment_reply = ""
 
-            if ("my\_friendly\_bot" in comment_body.lower() and comment_author != "my_friendly_bot"):
+            if (("my\_friendly\_bot" in comment_body.lower() or "my_friendly_bot" in comment_body.lower()) and comment_author != "my_friendly_bot"):
                 print ("\n\nFound a comment!")
-                message = re.search("(i\'m)( *)(\w*)(,*)( *)(my\\\\\_friendly\\\\\_bot)",comment_body, re.IGNORECASE)
+                message = re.search("(i\'m)( *)(\w*)(,*)( *)my[\\\]?_friendly[\\\]?_bot",comment_body, re.IGNORECASE)
 
                 if message:
                     message = message.group(3).lower()
