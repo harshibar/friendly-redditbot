@@ -104,8 +104,6 @@ def run(r, response_data):
         # combine results
         parsed_comment_json["data"].extend(parsed_comment_json2["data"])
 
-        print(parsed_comment_json)
-
         # write to file the last utc
         with open("utc.txt", "w") as f:
             f.write(str(last_utc))
