@@ -10,7 +10,7 @@ To prevent your bot from being banned, allow it to only function in specific sub
 
 
 ### 3. Make a separate Reddit account for your bot!
-Reddit bots are registered as 'scripts' running under a Reddit user account. So, when setting up your config.py file, first create a new Reddit account, and use those credentials. Also, remember not to share or upload the config.py file on Github!
+Reddit bots are registered as 'scripts' running under a Reddit user account. So, when setting up your `config.py` file, first create a new Reddit account, and use those credentials. Also, remember not to share or upload the `config.py` file on Github!
 
 ### 4. Use pushshift.io to collect Reddit data.
 If you want to scan all of reddit, using just PRAW can be very slow. Luckily, [pushshift.io](http://pushshift.io) has a  [clean API](https://github.com/pushshift/api) that allows you to search all of Reddit. Use the `after` keyword in the query to find results from after the last time the bot was invoked so the query runs quickly!
